@@ -93,7 +93,7 @@ def get_marker_lw(signal):
 # --- Signal and Trend -----------------------------------------------
 
 
-def mk_signal_ax(time_unit="a.u.", fig=None):
+def mk_signal_ax(time_unit="a.u.",signal_unit="a.u.", fig=None):
 
     if fig is None:
         fig = ppl.figure(figsize=(x_size, 3.2))
@@ -163,7 +163,7 @@ def draw_detrended(ax, time_vector, detrended):
 # --- Fourier Spectrum --------------------------
 
 
-def mk_Fourier_ax(fig, time_unit="a.u.", show_periods=False):
+def mk_Fourier_ax(fig, time_unit="a.u.",signal_unit="a.u.", show_periods=False):
 
     fig.clf()
     ax = fig.subplots()
@@ -250,7 +250,9 @@ def averaged_Wspec(averaged_Wspec, periods, time_unit="a.u", fig=None):
 # --- Wavelet spectrum  ------
 
 
-def mk_signal_modulus_ax(time_unit="a.u.", height_ratios=[1, 2.5], fig=None):
+def mk_signal_modulus_ax(time_unit="a.u.",
+                         signal_unit="a.u.",
+                         height_ratios=[1, 2.5], fig=None):
 
     if fig is None:
         fig = ppl.figure(figsize=(x_size, 6.5))
@@ -261,7 +263,7 @@ def mk_signal_modulus_ax(time_unit="a.u.", height_ratios=[1, 2.5], fig=None):
     sig_ax = axs[0]
     mod_ax = axs[1]
 
-    sig_ax.set_ylabel("Signal (a.u.)", fontsize=label_size)
+    sig_ax.set_ylabel("Signal (" + signal_unit + ")", fontsize=label_size)
 
     mod_ax.set_xlabel("Time (" + time_unit + ")", fontsize=label_size)
     mod_ax.set_ylabel("Period (" + time_unit + ")", fontsize=label_size)
@@ -349,7 +351,9 @@ def draw_COI(ax, time_vector):
 # --- Wavelet readout ----------------------------
 
 
-def plot_readout(ridge_data, time_unit="a.u.", draw_coi=False, fig=None):
+def plot_readout(ridge_data, time_unit="a.u.",
+                 signal_unit="a.u.",
+                 draw_coi=False, fig=None):
 
     """
     ridge_data from core.eval_ridge(...)
@@ -502,7 +506,7 @@ def plot_readout(ridge_data, time_unit="a.u.", draw_coi=False, fig=None):
     ax3.set_ylim((0, 1.1 * amplitudes.max()))
     ax3.ticklabel_format(style="sci", axis="y", scilimits=(0, 0))
     ax3.yaxis.offsetText.set_fontsize(tick_label_size)
-    ax3.set_ylabel("Amplitude (a.u.)", fontsize=label_size)
+    ax3.set_ylabel("Amplitude (" + signal_unit + ")", fontsize=label_size)
     ax3.set_xlabel("Time (" + time_unit + ")", fontsize=label_size)
     ax3.tick_params(axis="both", labelsize=tick_label_size)
 
@@ -635,7 +639,9 @@ def power_distribution(powers, kde=True, fig=None):
 
 
 def ensemble_dynamics(
-    periods, amplitudes, powers, phases, dt=1, time_unit="a.u", fig=None
+        periods, amplitudes, powers, phases, dt=1,
+        time_unit="a.u", signal_unit="a.u.",
+        fig=None
 ):
 
     """
@@ -663,6 +669,8 @@ def ensemble_dynamics(
     dt : float, the sampling interval to get a proper time axis
 
     time_unit : str, the time unit label
+
+    signal_unit : str, the signal unit label
 
     """
 
@@ -703,14 +711,14 @@ def ensemble_dynamics(
     ax3.fill_between(
         tvec, amplitudes["Q1"], amplitudes["Q3"], color=AMPLITUDE_COLOR, alpha=0.2
     )
-    ax3.set_ylabel(f"Amplitude (a.u.)", fontsize=label_size)
+    ax3.set_ylabel(f"Amplitude ({signal_unit})", fontsize=label_size)
     ax3.tick_params(axis="both", labelsize=tick_label_size)
     ax3.set_xlabel(f"Time ({time_unit})", fontsize=label_size)
 
     # powers
     ax4.plot(tvec, powers["median"], c=POWER_COLOR, lw=2, alpha=0.6)
     ax4.fill_between(tvec, powers["Q1"], powers["Q3"], color=POWER_COLOR, alpha=0.2)
-    ax4.set_ylabel(f"Power (a.u.)", fontsize=label_size)
+    ax4.set_ylabel(f"Power ({signal_unit})", fontsize=label_size)
     ax4.tick_params(axis="both", labelsize=tick_label_size)
     ax4.set_xlabel(f"Time ({time_unit})", fontsize=label_size)
 
@@ -721,7 +729,9 @@ def ensemble_dynamics(
 
 
 def Fourier_distribution(
-    df_fouriers, time_unit="a.u.", label=None, color=FOURIER_COLOR, fig=None
+        df_fouriers, time_unit="a.u.",
+        signal_unit="a.u.",
+        label=None, color=FOURIER_COLOR, fig=None
 ):
 
     """
@@ -736,6 +746,7 @@ def Fourier_distribution(
                             index holds the periods
 
     time_unit : str, the time unit label
+    signal_unit : str, the signal unit label
 
     fig : matplotlib figure instance
 

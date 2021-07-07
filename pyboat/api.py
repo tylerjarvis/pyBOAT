@@ -39,6 +39,9 @@ class WAnalyzer:
 
     time_unit_label: string
                      the label for the time unit, e.g. 's' or 'min'
+    signal_unit_label: string
+                     the label for the signal unit, e.g. 'counts' or 'ohms'
+
 
     M         : Length of the sinc filter window, defaults to length
                 of input signal. Set to a lower value to 
@@ -143,6 +146,7 @@ class WAnalyzer:
             dt,
             p_max=None,
             time_unit_label="a.u.",            
+            signal_unit_label="a.u.",            
             M=None
     ):
 
@@ -157,6 +161,7 @@ class WAnalyzer:
         self.p_max = p_max
         self.M = M
         self.time_unit_label = time_unit_label
+        self.signal_unit_label = signal_unit_label
 
         # to allow for detrending + Wavelet analysis
         self.ana_signal = None
@@ -229,7 +234,10 @@ class WAnalyzer:
 
         # only after potential detrending!
         if window_size:
+            # Normalize by amplitude
             ana_signal = self.normalize_amplitude(ana_signal, window_size)
+            # When normalization has occurred, the signal units are gone
+            self.signal_unit_label="a.u."   
 
         self.ana_signal = ana_signal
 
@@ -239,7 +247,8 @@ class WAnalyzer:
 
             tvec = np.arange(len(ana_signal)) * self.dt
 
-            axs = pl.mk_signal_modulus_ax(self.time_unit_label)
+            axs = pl.mk_signal_modulus_ax(time_unit=self.time_unit_label,
+                                          signal_unit=self.signal_unit_label)
             pl.plot_signal_modulus(
                 axs,
                 time_vector=tvec,
@@ -694,6 +703,7 @@ class WAnalyzer:
         pl.plot_readout(
             self.ridge_data,
             time_unit=self.time_unit_label,
+            signal_unit=self.signal_unit_label,
             draw_coi = draw_coi
         )
 
